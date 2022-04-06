@@ -1,6 +1,7 @@
 package main
 
 import (
+	"b2mak/theScoreAssignemnt/models"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -33,24 +34,6 @@ import (
 // 	INDEX name_idx (name),
 // )
 
-type player struct {
-	name             string
-	team             string
-	position         string
-	att_g            float64
-	att              int
-	yds              int
-	avg              float64
-	yds_g            float64
-	td               int
-	lng              string
-	first            int
-	first_percentage float64
-	twenty_plus      int
-	forty_plus       int
-	fum              int
-}
-
 func interfaceToInt(val interface{}) int {
 	switch val.(type) {
 	case int:
@@ -82,8 +65,8 @@ func interfaceToString(val interface{}) string {
 	}
 }
 
-func getFormattedPlayers() []player {
-	str, err := os.ReadFile("/Users/bmak/Code/theScoreAssignment/rushing.json")
+func getFormattedPlayers() []models.Player {
+	str, err := os.ReadFile("/Users/bmak/Code/theScoreAssignment/db/rushing.json")
 	if err != nil {
 		panic(err)
 	}
@@ -91,33 +74,33 @@ func getFormattedPlayers() []player {
 	var data []map[string]interface{}
 	json.Unmarshal([]byte(str), &data)
 
-	var players []player
+	var players []models.Player
 
 	for i, obj := range data {
 		fmt.Println(i, obj)
-		p := player{
-			name:             obj["Player"].(string),
-			team:             obj["Team"].(string),
-			position:         obj["Pos"].(string),
-			att_g:            obj["Att/G"].(float64),
-			att:              interfaceToInt(obj["Att"]),
-			yds:              interfaceToInt(obj["Yds"]),
-			avg:              obj["Avg"].(float64),
-			yds_g:            obj["Yds/G"].(float64),
-			td:               interfaceToInt(obj["TD"]),
-			lng:              interfaceToString(obj["Lng"]),
-			first:            interfaceToInt(obj["1st"]),
-			first_percentage: obj["1st%"].(float64),
-			twenty_plus:      interfaceToInt(obj["20+"]),
-			forty_plus:       interfaceToInt(obj["40+"]),
-			fum:              interfaceToInt(obj["FUM"]),
+		p := models.Player{
+			Name:             obj["Player"].(string),
+			Team:             obj["Team"].(string),
+			Position:         obj["Pos"].(string),
+			Att_g:            obj["Att/G"].(float64),
+			Att:              interfaceToInt(obj["Att"]),
+			Yds:              interfaceToInt(obj["Yds"]),
+			Avg:              obj["Avg"].(float64),
+			Yds_g:            obj["Yds/G"].(float64),
+			Td:               interfaceToInt(obj["TD"]),
+			Lng:              interfaceToString(obj["Lng"]),
+			First:            interfaceToInt(obj["1st"]),
+			First_percentage: obj["1st%"].(float64),
+			Twenty_plus:      interfaceToInt(obj["20+"]),
+			Forty_plus:       interfaceToInt(obj["40+"]),
+			Fum:              interfaceToInt(obj["FUM"]),
 		}
 		players = append(players, p)
 	}
 	return players
 }
 
-func insertData(players []player) {
+func insertData(players []models.Player) {
 	fmt.Println("Go MySQL Tutorial")
 
 	// Open up our database connection.
@@ -155,21 +138,21 @@ func insertData(players []player) {
 		// fum := fmt.Sprintf("%d", p.fum)
 
 		val := goqu.Vals{
-			p.name,
-			p.team,
-			p.position,
-			p.att_g,
-			p.att,
-			p.yds,
-			p.avg,
-			p.yds_g,
-			p.td,
-			p.lng,
-			p.first,
-			p.first_percentage,
-			p.twenty_plus,
-			p.forty_plus,
-			p.fum,
+			p.Name,
+			p.Team,
+			p.Position,
+			p.Att_g,
+			p.Att,
+			p.Yds,
+			p.Avg,
+			p.Yds_g,
+			p.Td,
+			p.Lng,
+			p.First,
+			p.First_percentage,
+			p.Twenty_plus,
+			p.Forty_plus,
+			p.Fum,
 		}
 
 		// str := fmt.Sprintf(
@@ -195,12 +178,12 @@ func insertData(players []player) {
 
 	fmt.Println(sql)
 
-	insert, err_on_insert := db.Query(sql)
-	if err_on_insert != nil {
-		panic(err_on_insert.Error())
-	}
+	// insert, err_on_insert := db.Query(sql)
+	// if err_on_insert != nil {
+	// 	panic(err_on_insert.Error())
+	// }
 
-	defer insert.Close()
+	// defer insert.Close()
 }
 
 func main() {
