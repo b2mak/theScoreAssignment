@@ -1,0 +1,57 @@
+<div id="inputFields">
+  <label for="fname">Name Search:</label>
+  <input type="text" id="fname" [(ngModel)]="name">
+  <label for="column">Column to Sort:</label>
+  <select id="column" [(ngModel)]="column">
+    <option value="None">None</option>
+    <option value="name">Name</option>
+    <option value="team">Team</option>
+    <option value="position">Position</option>
+    <option value="att_g">Att/g</option>
+    <option value="att">Att</option>
+    <option value="yds">Yds</option>
+    <option value="avg">Avg</option>
+    <option value="yds_g">Yds/g</option>
+    <option value="td">TD</option>
+    <option value="lng">Lng</option>
+    <option value="first">First</option>
+    <option value="first_percentage">First%</option>
+    <option value="twenty_plus">Twenty+</option>
+    <option value="forty_plus">Forty+</option>
+    <option value="fum">Fumbles</option>
+  </select>
+  <label for="direction">Direction:</label>
+  <select id="direction" [(ngModel)]="direction">
+    <option value="None">None</option>
+    <option value="asc">Accending</option>
+    <option value="desc">Descending</option>
+  </select>
+  <button (click)="updateTable()">Apply</button>
+</div>
+
+<button id="download" (click)="download()">Download!</button>
+
+<table>
+  <tr>
+    <th *ngFor="let colName of tableColumns">
+      {{colName}}
+    </th>
+  </tr>
+  <tr *ngFor="let player of players">
+    <td>{{player.Name}}</td>
+    <td>{{player.Team}}</td>
+    <td>{{player.Position}}</td>
+    <td>{{player.Att_g}}</td>
+    <td>{{player.Att}}</td>
+    <td>{{player.Yds}}</td>
+    <td>{{player.Avg}}</td>
+    <td>{{player.Yds_g}}</td>
+    <td>{{player.Td}}</td>
+    <td>{{player.Lng}}</td>
+    <td>{{player.First}}</td>
+    <td>{{player.First_percentage}}</td>
+    <td>{{player.Twenty_plus}}</td>
+    <td>{{player.Forty_plus}}</td>
+    <td>{{player.Fum}}</td>
+  </tr>
+</table>

@@ -1,0 +1,12 @@
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+#inputFields {
+  margin-bottom: 10px;
+}
+
+#download {
+  margin-bottom: 10px;
+}
