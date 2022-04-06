@@ -140,6 +140,10 @@ func (c *MainController) Get() {
 		c.GetString("orderDirection"),
 	)
 
+	c.Ctx.Output.Header(
+		"Access-Control-Allow-Origin",
+		"http://localhost:4200",
+	)
 	c.Data["json"] = players
 	c.ServeJSON()
 }
