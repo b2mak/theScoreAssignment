@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: ./backend/
+    container_name: beego-backend
+    ports:
+      - 8080:8080
+
+  frontend:
+    build: ./frontend/
+    container_name: angular-frontend
+    ports:
+      - 80:80
+
+  mysql:
+    image: mysql:oracle
+    container_name: mysql-db
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/data.sql:/docker-entrypoint-initdb.d/data.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=mypassword
+      - MYSQL_DATABASE=theScoreAssignment
