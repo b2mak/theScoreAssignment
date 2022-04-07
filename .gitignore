@@ -5,3 +5,4 @@ todo/todo
 *.exe
 *.exe~
 frontend/.angular/cache
+frontend/node_modules
