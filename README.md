@@ -68,4 +68,5 @@ sudo docker compose up
 *Assuming you are in the root directory of this project*
 
 After all three containers are up and running just navigate to `localhost` on your browser to play around with it.
+
 *This solution needs ports 80 and 8080 to be available on your host machine*
