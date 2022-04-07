@@ -142,7 +142,7 @@ func (c *MainController) Get() {
 
 	c.Ctx.Output.Header(
 		"Access-Control-Allow-Origin",
-		"http://localhost:4200",
+		"http://localhost:80",
 	)
 	c.Data["json"] = players
 	c.ServeJSON()
