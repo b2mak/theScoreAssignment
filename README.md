@@ -71,4 +71,4 @@ After all three containers are up and running just navigate to `localhost` on yo
 
 *This solution needs ports 80 and 8080 to be available on your host machine*
 
-![example image](Rushing\ Challenge\ UI.png)
+![example image](./Rushing%20Challenge%20UI.png)
