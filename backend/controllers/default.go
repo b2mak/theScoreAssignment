@@ -23,7 +23,7 @@ type MainController struct {
 func getDB() *sql.DB {
 	mysqlDB, err := sql.Open(
 		"mysql",
-		"root:mypassword@tcp(127.0.0.1:3306)/theScoreAssignment",
+		"root:mypassword@tcp(host.docker.internal:3306)/theScoreAssignment",
 	)
 
 	// if there is an error opening the connection, handle it
