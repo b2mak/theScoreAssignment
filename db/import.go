@@ -119,24 +119,7 @@ func insertData(players []models.Player) {
 	defer db.Close()
 
 	var values [][]interface{}
-	// twenty_plus, forty_plus, fum)
 	for _, p := range players {
-		// name := fmt.Sprintf("%s", p.name)
-		// team := fmt.Sprintf("%s'", p.team)
-		// position := fmt.Sprintf("'%s'", p.position)
-		// att_g := fmt.Sprintf("%g", p.att_g)
-		// att := fmt.Sprintf("%d", p.att)
-		// yds := fmt.Sprintf("%d", p.yds)
-		// avg := fmt.Sprintf("%g", p.avg)
-		// yrds_g := fmt.Sprintf("%g", p.yds_g)
-		// td := fmt.Sprintf("%d", p.td)
-		// lng := fmt.Sprintf("'%s'", p.lng)
-		// first := fmt.Sprintf("%d", p.first)
-		// first_percentage := fmt.Sprintf("%g", p.first_percentage)
-		// twenty_plus := fmt.Sprintf("%d", p.twenty_plus)
-		// forty_plus := fmt.Sprintf("%d", p.forty_plus)
-		// fum := fmt.Sprintf("%d", p.fum)
-
 		val := goqu.Vals{
 			p.Name,
 			p.Team,
@@ -155,9 +138,6 @@ func insertData(players []models.Player) {
 			p.Fum,
 		}
 
-		// str := fmt.Sprintf(
-		// 	"(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-		// )
 		values = append(values, val)
 	}
 
@@ -166,24 +146,17 @@ func insertData(players []models.Player) {
 		Cols("name", "team", "position", "att_g", "att", "yds", "avg", "yds_g", "td", "lng", "first", "first_percentage", "twenty_plus", "forty_plus", "fum").
 		Vals(values...)
 
-	// sql := fmt.Sprintf(
-	// 	"INSERT INTO players (name, team, position, att_g, att, yds, avg, yrds_g, td, lng, first, first_percentage, twenty_plus, forty_plus, fum) VALUES %s",
-	// 	strings.Join(valueStrings, ", "),
-	// )
-
 	sql, _, err_on_sql_build := ds.ToSQL()
 	if err_on_sql_build != nil {
 		panic(err_on_sql_build.Error())
 	}
 
-	fmt.Println(sql)
+	insert, err_on_insert := db.Query(sql)
+	if err_on_insert != nil {
+		panic(err_on_insert.Error())
+	}
 
-	// insert, err_on_insert := db.Query(sql)
-	// if err_on_insert != nil {
-	// 	panic(err_on_insert.Error())
-	// }
-
-	// defer insert.Close()
+	defer insert.Close()
 }
 
 func main() {
