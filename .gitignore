@@ -6,3 +6,5 @@ todo/todo
 *.exe~
 frontend/.angular/cache
 frontend/node_modules
+backend/backend
+backend/lastupdate.tmp
