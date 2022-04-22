@@ -55,3 +55,15 @@
     <td>{{player.Fum}}</td>
   </tr>
 </table>
+
+<table>
+  <tr>
+    <th *ngFor="let colName of teamsTableColumns">
+      {{colName}}
+    </th>
+  </tr>
+  <tr *ngFor="let team of teams">
+    <td>{{team['Team']}}</td>
+    <td>{{team['total_yds']}}</td>
+  </tr>
+</table>

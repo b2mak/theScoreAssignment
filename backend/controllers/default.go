@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/csv"
 	"fmt"
+	"log"
 	"os"
 	"reflect"
 	"strings"
@@ -68,6 +69,41 @@ func getPlayers(
 	}
 
 	return players
+}
+
+func getTeamsImpl() []map[string]interface{} {
+	mysqlDB := getDB()
+	// defer the close till after the main function has finished
+	// executing
+	defer mysqlDB.Close()
+
+	db := goqu.New("mysql", mysqlDB)
+	query := db.From("nfl_players")
+	query = query.Select("team", goqu.SUM("yds").As("total_yds")).GroupBy("team")
+
+	sql, _, _ := query.ToSQL()
+	rows, err := db.Query(sql)
+	if err != nil {
+		panic((err.Error()))
+	}
+
+	var teamYds []map[string]interface{}
+	var (
+		team     string
+		totalYds int
+	)
+	for rows.Next() {
+		err := rows.Scan(&team, &totalYds)
+		teamMap := make(map[string]interface{})
+		teamMap["Team"] = team
+		teamMap["total_yds"] = totalYds
+		teamYds = append(teamYds, teamMap)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return teamYds
 }
 
 func buildFile(
@@ -145,5 +181,15 @@ func (c *MainController) Get() {
 		"http://localhost",
 	)
 	c.Data["json"] = players
+	c.ServeJSON()
+}
+
+func (c *MainController) GetTeams() {
+	teamYds := getTeamsImpl()
+	c.Ctx.Output.Header(
+		"Access-Control-Allow-Origin",
+		"http://localhost",
+	)
+	c.Data["json"] = teamYds
 	c.ServeJSON()
 }

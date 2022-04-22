@@ -32,4 +32,8 @@ export class PlayersService {
   getPlaceHolder() {
     return JSON.parse(this.testData)
   }
+
+  getTeams() {
+    return this.http.get<object[]>('http://localhost:8080/teams')
+  }
 }

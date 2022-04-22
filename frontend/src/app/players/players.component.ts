@@ -30,8 +30,18 @@ export class PlayersComponent implements OnInit {
   ];
   players
 
+  teamsTableColumns: string[] = [
+    "Team",
+    "Total Yds"
+  ]
+  teams: {[k: string]: any}[]
+
   constructor(private service: PlayersService) {
     this.players = service.getPlaceHolder()
+    this.teams = [{
+      "Team": "test",
+      "total_yds": 1
+    }]
     this.name = ""
     this.column = "None"
     this.direction = "None"
@@ -39,6 +49,7 @@ export class PlayersComponent implements OnInit {
 
   ngOnInit(): void {
     this.showPlayers();
+    this.updateTeams();
   }
 
   showPlayers() {
@@ -55,6 +66,15 @@ export class PlayersComponent implements OnInit {
 
   updateTable() {
     this.showPlayers();
+  }
+
+  updateTeams() {
+    this.service.getTeams(
+    ).subscribe(
+      data => {
+        this.teams = data
+      }
+    )
   }
 
   download() {
