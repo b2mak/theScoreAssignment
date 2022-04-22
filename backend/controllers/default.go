@@ -21,7 +21,7 @@ type MainController struct {
 func getDB() *sql.DB {
 	mysqlDB, err := sql.Open(
 		"mysql",
-		"root:mypassword@tcp(localhost:3306)/theScoreAssignment",
+		"root:mypassword@tcp(mysql:3306)/theScoreAssignment",
 	)
 
 	// if there is an error opening the connection, handle it
@@ -140,7 +140,7 @@ func (c *MainController) Get() {
 
 	c.Ctx.Output.Header(
 		"Access-Control-Allow-Origin",
-		"http://localhost:4200",
+		"http://localhost",
 	)
 	c.Data["json"] = players
 	c.ServeJSON()
@@ -150,7 +150,7 @@ func (c *MainController) GetTeams() {
 	teamYds := getTeamsImpl()
 	c.Ctx.Output.Header(
 		"Access-Control-Allow-Origin",
-		"http://localhost:4200",
+		"http://localhost",
 	)
 	c.Data["json"] = teamYds
 	c.ServeJSON()
