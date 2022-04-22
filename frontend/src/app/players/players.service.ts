@@ -14,6 +14,8 @@ export class PlayersService {
     name: string,
     column: string,
     direction: string,
+    offset: number,
+    limit: number,
   ) {
     var queryParams: string[] = []
     if (name !== "") {
@@ -24,6 +26,9 @@ export class PlayersService {
       queryParams.push("orderCol=" + column)
       queryParams.push("orderDirection=" + direction)
     }
+
+    queryParams.push("limit=" + limit)
+    queryParams.push("offset=" + offset)
 
     var url = this.playersUrl + "?" + queryParams.join("&")
     return this.http.get<string>(url)

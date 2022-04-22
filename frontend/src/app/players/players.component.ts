@@ -29,6 +29,8 @@ export class PlayersComponent implements OnInit {
     "Fumbles",
   ];
   players
+  offset: number = 0
+  limit: number = 10
 
   teamsTableColumns: string[] = [
     "Team",
@@ -48,15 +50,17 @@ export class PlayersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.showPlayers();
     this.updateTeams();
+    this.updateTable();
   }
 
-  showPlayers() {
+  updateTable() {
     this.service.getPlayers(
       this.name,
       this.column,
       this.direction,
+      this.offset,
+      this.limit,
     ).subscribe(
       data => {
         this.players = data
@@ -64,8 +68,14 @@ export class PlayersComponent implements OnInit {
     )
   }
 
-  updateTable() {
-    this.showPlayers();
+  previous() {
+    this.offset -= this.limit
+    this.updateTable()
+  }
+
+  next() {
+    this.offset += this.limit
+    this.updateTable()
   }
 
   updateTeams() {

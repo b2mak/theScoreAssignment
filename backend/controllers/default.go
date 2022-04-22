@@ -3,13 +3,10 @@ package controllers
 import (
 	"b2mak/theScoreAssignemnt/models"
 	"database/sql"
-	"encoding/csv"
 	"fmt"
 	"log"
-	"os"
-	"reflect"
+	"strconv"
 	"strings"
-	"time"
 
 	beego "github.com/beego/beego/v2/server/web"
 	"github.com/doug-martin/goqu/v9"
@@ -24,7 +21,7 @@ type MainController struct {
 func getDB() *sql.DB {
 	mysqlDB, err := sql.Open(
 		"mysql",
-		"root:mypassword@tcp(mysql:3306)/theScoreAssignment",
+		"root:mypassword@tcp(localhost:3306)/theScoreAssignment",
 	)
 
 	// if there is an error opening the connection, handle it
@@ -39,6 +36,8 @@ func getPlayers(
 	name string,
 	orderCol string,
 	orderDirection string,
+	limit string,
+	offset string,
 ) []models.Player {
 	mysqlDB := getDB()
 	// defer the close till after the main function has finished
@@ -61,6 +60,16 @@ func getPlayers(
 		} else {
 			query = query.Order(goqu.I(orderCol).Desc())
 		}
+	}
+
+	if offset != "" {
+		v, _ := strconv.Atoi(offset)
+		query = query.Offset(uint(v))
+	}
+
+	if limit != "" {
+		v, _ := strconv.Atoi(limit)
+		query = query.Limit(uint(v))
 	}
 
 	var players []models.Player
@@ -106,79 +115,32 @@ func getTeamsImpl() []map[string]interface{} {
 	return teamYds
 }
 
-func buildFile(
-	name string,
-	orderCol string,
-	orderDirection string,
-) string {
-	players := getPlayers(
-		name,
-		orderCol,
-		orderDirection,
-	)
-
-	filePath := fmt.Sprintf(
-		"/tmp/%d.csv",
-		time.Now().Unix(),
-	)
-
-	f, err := os.Create(filePath)
-	defer f.Close()
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	w := csv.NewWriter(f)
-	defer w.Flush()
-
-	st := reflect.TypeOf(models.Player{})
-	numFields := st.NumField()
-
-	var fieldNames []string
-	for i := 0; i < numFields; i++ {
-		fieldNames = append(fieldNames, st.Field(i).Name)
-	}
-
-	if err = w.Write(fieldNames); err != nil {
-		panic(err.Error())
-	}
-
-	for _, p := range players {
-		var values []string
-		for i := 0; i < numFields; i++ {
-			r := reflect.ValueOf(p)
-			str := fmt.Sprintf("%v", reflect.Indirect(r).Field(i))
-			values = append(values, str)
-		}
-		if err = w.Write(values); err != nil {
-			panic(err.Error())
-		}
-	}
-
-	return filePath
-}
-
 func (c *MainController) GetFile() {
-	filePath := buildFile(
-		c.GetString("name"),
-		c.GetString("orderCol"),
-		c.GetString("orderDirection"),
-	)
-
-	c.Ctx.Output.Download(filePath)
+	test := make(map[string]string)
+	test["ErrorMessage"] = "test error"
+	test["ErrorCode"] = "1234"
+	c.Data["json"] = test
+	c.Abort("400")
 }
 
 func (c *MainController) Get() {
+	name := c.GetString("name")
+	orderCol := c.GetString("orderCol")
+	orderDir := c.GetString("orderDirection")
+	limit := c.GetString("limit")
+	offset := c.GetString("offset")
+
 	players := getPlayers(
-		c.GetString("name"),
-		c.GetString("orderCol"),
-		c.GetString("orderDirection"),
+		name,
+		orderCol,
+		orderDir,
+		limit,
+		offset,
 	)
 
 	c.Ctx.Output.Header(
 		"Access-Control-Allow-Origin",
-		"http://localhost",
+		"http://localhost:4200",
 	)
 	c.Data["json"] = players
 	c.ServeJSON()
@@ -188,7 +150,7 @@ func (c *MainController) GetTeams() {
 	teamYds := getTeamsImpl()
 	c.Ctx.Output.Header(
 		"Access-Control-Allow-Origin",
-		"http://localhost",
+		"http://localhost:4200",
 	)
 	c.Data["json"] = teamYds
 	c.ServeJSON()
